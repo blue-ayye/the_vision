@@ -1,0 +1,219 @@
+----------------------------------------------------
+--MAIN QUEST_lv5
+--METIN2 THE VISION Quest
+----------------------------------------------------
+quest the_vision  begin
+        state start begin
+        end
+        state run begin
+                when login or levelup with pc.level >= 5  begin
+					set_state(information)
+                end
+        end
+
+        state information begin
+                when letter begin
+					local v = find_npc_by_vnum(9006)
+					if v != 0 then
+						target.vid("__TARGET__", v, "Old Lady")
+					end
+					q.set_icon("scroll_open_green.tga")
+					send_letter("Talk to the Old Lady")
+                end
+
+                when button or info begin
+					say_title("Talk to the Old Lady")
+					say("")
+					say("Introduce yourself to the Old Lady")
+					say("")
+                end
+
+                when __TARGET__.target.click or
+					9006.chat."Introduction" begin
+					target.delete("__TARGET__")
+					say_title("Old Lady:")
+					say("")
+					----"123456789012345678901234567890123456789012345678901234567890"|
+					say("Oh hello there!")
+					say("")
+					say("Are you new in town?")
+					say("I haven't seen you around here before.")
+					say("")
+					wait()
+					say_pc_name()
+					say("")
+					say("Hi, yes... I'm "..pc.get_name()..". Nice to meet you.")
+					say("")
+					wait()
+					say("Welcome to the Era of Metin2, "..pc.get_name())
+					say("Isn't it wonderful?")
+					say("")
+					wait()
+					say_title("Old Lady:")
+					say("")
+					say("I am the psychic in this town, you can")
+					say("visit me anytime to read your fortune.")
+					say("")
+					wait()
+					say_title("Old Lady:")
+					say("")
+					say("I have a gift for you.")
+					say("Drink this Potion at the peak of Mt. Akash")
+					say("This is an ancient recipes which is said to reveal your destiny...")
+					say("with some side affects...cough...")
+					say("")
+					wait()
+					say_pc_name()
+					say("")
+					say("Wait... What?!")
+					say("")
+					wait()
+					say_title("Old Lady:")
+					say("")
+					say("Oh it's nothing... hahahahaha")
+					say("Now now, move along...")
+					say("")
+					say("Let me know if it wor...err... how it goes!")
+					say("")
+					say_pc_name()
+					say("")
+					say("Emm... Thank you?")
+					say("")
+					pc.give_item2(72702, 1)
+					say_reward("You received the Potion")
+					set_state(go_to_location)
+				end
+        end
+
+        state go_to_location begin
+
+				when letter begin
+            target.pos("__TARGET__", 490, 560, 62, "")
+				end
+
+                when letter begin
+			send_letter("Visit Mt. Akash")
+				end
+
+                when button or info begin
+			say_title("Visit Mt. Akash")
+					----"123456789012345678901234567890123456789012345678901234567890"|
+					say("")
+					say("The Old Lady told you to drink the Potion at Mt. Akash")
+					say("")
+				end
+
+				when __TARGET__.target.arrive begin
+            target.delete("__TARGET__")
+            say_title(Visit Mt. Akash)
+					say_pc_name()
+					say("")
+					say("This must be the location")
+					say("")
+					wait()
+					say_pc_name()
+					say("")
+					say("Mmh that tasted rather good... I could get used to this...")
+					say("")
+					say("")
+					say("oh no... I'm feeling dizzy")
+					say("")
+					say("")
+					say("")
+					say("")
+					say("")
+					say("")
+					say("I think I might pass out...")
+					wait()
+					pc.warp(959900,269200)
+					set_state(blue_death)
+				end
+		end
+
+		state blue_death begin
+
+                when login with pc.get_map_index() == 255 begin
+			chat("..")
+			notice_big("Blue Death: Puny humans, despair! Muhahahaha")
+			notice_big("I will devour everything! Pay the price for your foolishness.")
+				end
+
+				when button or info begin
+			say_title("Wake up")
+					----"123456789012345678901234567890123456789012345678901234567890"|
+					say("")
+					say("")
+					pc.warp(959900,269200)
+					set_state(report_old_lady)
+				end
+		end
+
+		state report_old_lady begin
+
+                when letter begin
+			send_letter("Report")
+				end
+
+                when button or info begin
+			say_title("Report")
+					----"123456789012345678901234567890123456789012345678901234567890"|
+                   	say("")
+					say("That was weird... I better report this to the Old Lady...")
+					say("")
+				end
+
+				when 9006.chat."Inform the Old Lady about your vision" with pc.count_item(72702) <1   begin
+					say_title("Old Lady:")
+					say("The first time I heard about the Blue Death was from my father when")
+					say("I was a child.")
+					say("They say it lurks in the Demon Towers and rarely ever appears")
+					say("before an adventurer. If left alone, it won't bother coming after you.")
+					say("")
+					say("This is indeed worrisome...")
+					say("I better inform others. Meanwhile, why don't you")
+					say("get yourself a horse?")
+					say("")
+					wait()
+					say_title("Old Lady:")
+					say("")
+					say("Here, take this letter to the Stable Boy.")
+					pc.give_item2(72702, 1)
+					say_reward("You received a letter")
+					set_state(go_to_stableboy)
+				end
+		end
+
+		state go_to_stableboy begin
+                when letter begin
+			send_letter("Visit Stable Boy")
+                end
+                when button or info begin
+			say_title("Visit Stable Boy")
+				----"123456789012345678901234567890123456789012345678901234567890"|
+				say("")
+				say("Show the Old Lady's letter")
+				say("")
+				end
+
+				when 20349.chat."Show the Old Lady's Letter" begin
+				say_title("Stable Boy:")
+				say("Did the Old Lady send you?)
+				say("Very well.")
+				say("")
+				say("Here you go...")
+				say("Take care.")
+				pc.give_item2("50053", 1)
+				pc.remove_item("50052", 1)
+				pc.remove_item("72702", 1)
+				horse.unride()
+				horse.set_level(21)
+				horse.summon()
+				horse.ride()
+				say_reward("You got the Military Horse")
+				end
+
+        end
+
+        state __complete begin
+        end
+end
